@@ -62,22 +62,24 @@ def xml2text(xml):
     sz_moy = 0
     bold = 0
     i = 0
-    attrib = ""
-    # b = ""
+    # attrib = ""
+    b = ""
     for child in root.iter():
         if child.tag == qn('w:sz'):
             sz_moy += int(child.get("{http://schemas.openxmlformats.org/wordprocessingml/2006/main}val"))
             i += 1
+        # print(child)
     sz_moy = sz_moy / i
     for child in root.iter():
         # Trying to see how is made a file with all the child.tag
-        # b += "\n" + child.tag
-        # with open("outputdocxtagtry3.txt", "w", encoding="utf-8") as f:
-        #     f.write(b)
-
+        b += "\n" + str(child.tag) + str(child.attrib) 
+        with open("outputdocxtagtry3.txt", "w", encoding="utf-8") as f:
+            f.write(b)
         if child.tag == qn('w:b') and bold == 0:
             bold += 1
-            print(bold)
+            # print(bold)
+        elif child.tag == qn('w:tbl'):
+            print(child)
         elif child.tag == qn('w:t'):
             t_text = child.text
             if bold == 1:
@@ -86,7 +88,7 @@ def xml2text(xml):
                 text += "\n" + t_text if t_text is not None else ''
             before = 0
             bold = 0
-        elif child.tag in (qn('w:br'), qn('w:cr'), qn("w:p"), qn('w:tab')) and before < 2:
+        elif child.tag in (qn('w:br'), qn('w:cr'), qn("w:p")) and before < 2:
             text += '\n<br>'
             before += 1
     return text
